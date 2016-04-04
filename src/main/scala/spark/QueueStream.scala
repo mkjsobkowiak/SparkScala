@@ -1,9 +1,12 @@
+package spark
 
-import org.apache.spark.streaming.dstream.{InputDStream, DStream}
-import scala.collection.mutable
+
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming._
 import org.apache.spark.rdd.RDD
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.dstream.InputDStream
+
+import scala.collection.mutable
 
 object QueueStream {
 
@@ -16,8 +19,8 @@ object QueueStream {
     mapReduce(inputStream, lines)
     new Scheduler(lines, streamingContext)
 
-    streamingContext.start()
-    streamingContext.awaitTermination()
+    //streamingContext.start()
+    // streamingContext.awaitTermination()
   }
 
   def mapReduce(inputStream: InputDStream[Int], lines: mutable.Queue[RDD[Int]]): Unit = {
