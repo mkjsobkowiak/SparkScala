@@ -19,14 +19,21 @@ object QueueStream {
     mapReduce(inputStream, lines)
     new Scheduler(lines, streamingContext)
 
-    //streamingContext.start()
-    // streamingContext.awaitTermination()
+    streamingContext.start()
+    streamingContext.awaitTermination()
   }
 
   def mapReduce(inputStream: InputDStream[Int], lines: mutable.Queue[RDD[Int]]): Unit = {
     val mappedStream = inputStream.map(x => (x % 10, 1))
     val reducedStream = mappedStream.reduceByKey(_ + _)
     reducedStream.print()
+    reducedStream.foreachRDD(it => {
+      GenericDAO.begin
+      it.foreach(values => {
+        GenericDAO.save(new SimpleFun(values._1.toString, values._2.toString))
+      })
+      GenericDAO.end
+    })
   }
 }
 
