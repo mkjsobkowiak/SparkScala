@@ -24,7 +24,7 @@ class Scheduler(val lines: mutable.Queue[RDD[Int]], val streamingContext: Stream
       runnable = task
     )
   }
-
+  
   def task: Runnable = {
     new Runnable {
       def run() {
