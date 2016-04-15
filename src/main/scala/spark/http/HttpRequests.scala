@@ -1,6 +1,6 @@
 package spark.http
 
-import scalaj.http.{HttpOptions, Http}
+import scalaj.http.{Http, HttpOptions}
 
 case class WeatherDTO(weather: SkyDTO, main: TempDTO)
 
