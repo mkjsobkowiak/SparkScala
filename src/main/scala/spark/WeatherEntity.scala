@@ -4,7 +4,7 @@ import javax.persistence._
 
 @Entity
 @Table(name = "WEATHER")
-class WeatherEntity(deg: Double) {
+class WeatherEntity(degree_ : Double) {
 
   @Id
   @Column(name = "ID")
@@ -17,5 +17,5 @@ class WeatherEntity(deg: Double) {
   private var createDate: java.util.Date = new java.util.Date()
 
   @Column(name = "DEGREE")
-  private var degree: Double = deg
+  private var degree: Double = degree_
 }
