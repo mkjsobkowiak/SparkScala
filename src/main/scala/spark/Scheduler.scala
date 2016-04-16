@@ -1,3 +1,5 @@
+package spark
+
 import java.util.logging
 import java.util.logging.Level
 
@@ -19,11 +21,11 @@ class Scheduler(val lines: mutable.Queue[RDD[Int]], val streamingContext: Stream
     scheduler.schedule(
       initialDelay = DurationInt(4).seconds,
       interval = DurationInt(4).seconds,
-      runnable = task()
+      runnable = task
     )
   }
-
-  def task(): Runnable = {
+  
+  def task: Runnable = {
     new Runnable {
       def run() {
         logging.Logger.getGlobal.log(Level.INFO, "I'm working")
