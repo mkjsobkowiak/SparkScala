@@ -4,7 +4,7 @@ import javax.persistence._
 
 @Entity
 @Table(name = "TWEET")
-class TweetEntity(hashTag_ : String) {
+class TweetEntity(hashTag_ : String, hashTagCount_ : Int) {
 
   @Id
   @Column(name = "ID")
@@ -18,4 +18,7 @@ class TweetEntity(hashTag_ : String) {
 
   @Column(name = "HASH_TAG")
   private var hashTag: String = hashTag_
+
+  @Column(name = "HASH_TAG_COUNT")
+  private var hashTagCount: Int = hashTagCount_
 }

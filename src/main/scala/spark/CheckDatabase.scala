@@ -8,18 +8,18 @@ object CheckDatabase extends App {
   // JSON PARSER
   val body = HttpRequests.getBerlinWeather().asString.body
   val parsedJson = parse(body).extract[WeatherDTO]
-  print(body)
-  print(parsedJson.weather.description)
+  println(body)
+  println(parsedJson.weather.description)
 
   // DATABASE CHECK
-  //  val session = HibernateUtil.getSessionFactory.openSession()
-  //  session.beginTransaction()
-  //  val tweet1 = new TweetEntity("Natalino")
-  //  val tweet2 = new TweetEntity("Angelina")
-  //  val tweet3 = new TweetEntity("Kate")
-  //
-  //  session.save(tweet1)
-  //  session.save(tweet2)
-  //  session.save(tweet3)
-  //  session.getTransaction.commit()
+   val session = HibernateUtil.getSessionFactory.openSession()
+   session.beginTransaction()
+   val tweet1 = new TweetEntity("Natalino", 1)
+   val tweet2 = new TweetEntity("Angelina", 2)
+   val tweet3 = new TweetEntity("Kate", 3)
+
+   session.save(tweet1)
+   session.save(tweet2)
+   session.save(tweet3)
+   session.getTransaction.commit()
 }
