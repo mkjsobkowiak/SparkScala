@@ -14,13 +14,14 @@ class Scheduler(val lines: mutable.Queue[RDD[Int]], val streamingContext: Stream
   private[this] val actorSystem = ActorSystem()
   private[this] val scheduler = actorSystem.scheduler
   private[this] implicit val executor = actorSystem.dispatcher
+  private[this] val randomizer = scala.util.Random
 
   initScheduler
 
   def initScheduler = {
     scheduler.schedule(
       initialDelay = DurationInt(4).seconds,
-      interval = DurationInt(4).seconds,
+      interval = DurationInt(1).seconds,
       runnable = task
     )
   }
@@ -28,9 +29,8 @@ class Scheduler(val lines: mutable.Queue[RDD[Int]], val streamingContext: Stream
   def task: Runnable = {
     new Runnable {
       def run() {
-        logging.Logger.getGlobal.log(Level.INFO, "I'm working")
-        lines += streamingContext.sparkContext.makeRDD(List.range(8000, 9000))
-        logging.Logger.getGlobal.log(Level.INFO, "Finished")
+        val randomList = List.range(1, 1000).map(x => randomizer.nextInt(200))
+        lines += streamingContext.sparkContext.makeRDD(randomList)
       }
     }
   }
