@@ -1,13 +1,8 @@
 package spark
 
 
-import org.apache.spark.{SparkConf}
-import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkConf
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.dstream.InputDStream
-import com.datastax.spark.connector._
-
-import scala.collection.mutable
 
 object QueueStream {
 
@@ -20,19 +15,28 @@ object QueueStream {
       .set("spark.cassandra.connection.host", "192.168.56.101")
 
     val streamingContext = new StreamingContext(sparkConf, Seconds(1))
-    val lines = mutable.Queue[RDD[Int]]()
-    val inputStream = streamingContext.queueStream(lines)
+    val config = new twitter4j.conf.ConfigurationBuilder()
+      .setOAuthConsumerKey("X")
+      .setOAuthConsumerSecret("X")
+      .setOAuthAccessToken("X")
+      .setOAuthAccessTokenSecret("X")
+      .build
+
+    val authorization = new twitter4j.auth.OAuthAuthorization(config)
+    val atwitter = new twitter4j.TwitterFactory(config).getInstance(authorization).getAuthorization()
+
+    val inputStream = org.apache.spark.streaming.twitter.TwitterUtils.createStream(streamingContext, Some(atwitter))
     mapReduce(inputStream)
-    new Scheduler(lines, streamingContext)
     streamingContext.start()
     streamingContext.awaitTermination()
   }
 
-  def mapReduce(inputStream: InputDStream[Int]): Unit = {
-    val mappedStream = inputStream.map((_, 1))
-    val reducedStream = mappedStream.reduceByKey(_ + _)
-    reducedStream.print()
-    reducedStream.foreachRDD(it => it.saveToCassandra("test", "kv1", SomeColumns("word", "count")))
+  def mapReduce(inputStream: org.apache.spark.streaming.dstream.ReceiverInputDStream[twitter4j.Status]): Unit = {
+    val mappedStream = inputStream.filter(s => s.getPlace != null && s.getPlace.getCountryCode == "GB").map(s => (s
+      .getPlace.getName, s.getPlace.getCountry))
+    mappedStream.print()
+    //reducedStream.print()
+    //reducedStream.foreachRDD(it => it.saveToCassandra("test", "kv1", SomeColumns("word", "count")))
   }
 }
 
